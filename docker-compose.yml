@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  auth:
+    container_name: api-auth-svc
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - svc_network
+  pg:
+    image: postgres:16
+    container_name: pg-svc
+    env_file:
+    - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TZ: America/Fortaleza
+      PGTZ: America/Fortaleza
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} || exit 1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - svc_network
+
+volumes:
+  pg_data:
+
+networks:
+  svc_network:
+    driver: bridge
