@@ -6,7 +6,7 @@ class CreateUser(BaseModel):
     password: str
 
 class GetUser(BaseModel):
-    int: int
+    id: int
     name: str
     email: str
 
