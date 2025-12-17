@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from app.api.schemas.user import CreateUser, GetUser
-from app.models.user import User, save, get_users, get_user
+from app.api.schemas.user import CreateUser, GetUser, LoginSchema
+from app.models.user import get_users, get_user, create_user, auth_user
 
 router = APIRouter()
 
@@ -14,10 +14,8 @@ async def read_users(id:int):
 
 @router.post("/users/", tags=["users"], response_model=bool)
 async def create(data: CreateUser):
-    try:
-        user = User(**data.model_dump())
-        save(user)
-        return True
-    except Exception as e:
-        print(e)
-        return False
+    return create_user(data.model_dump())
+
+@router.post("/login/", tags=["auth"])
+async def login(data: LoginSchema):
+    return auth_user(data.model_dump())

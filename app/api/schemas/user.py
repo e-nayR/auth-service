@@ -12,3 +12,7 @@ class GetUser(BaseModel):
 
 class UpdateUser(BaseModel):
     name: str
+
+class LoginSchema(BaseModel):
+    email: str
+    password: str

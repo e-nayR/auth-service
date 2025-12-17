@@ -7,3 +7,9 @@ class Base(DeclarativeBase):
 
 engine = create_engine(db_url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def save(obj):
+    db = SessionLocal()
+    db.add(obj)
+    db.commit()
+    db.close()
